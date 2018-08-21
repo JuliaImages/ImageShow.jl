@@ -3,6 +3,8 @@ module ImageShow
 using Requires
 using FileIO
 using ImageCore, Colors, FixedPointNumbers
+
+# borrowed from Images; drop if moved to ImageCore
 const AbstractGray{T}                    = Color{T,1}
 
 const _have_restrict=Ref(false)
