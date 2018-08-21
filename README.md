@@ -1,6 +1,7 @@
 # ImageShow
 
-[![Build Status](https://travis-ci.org/RalphAS/ImageShow.jl.svg?branch=master)](https://travis-ci.org/Images/ImageShow.jl)
+[![Build Status](https://travis-ci.org/JuliaImages/ImageShow.jl.svg?branch=master)](https://travis-ci.org/JuliaImages/ImageShow.jl)
+[![Build status](https://ci.appveyor.com/api/projects/status/ar80h3mpsnl97wf7?svg=true)](https://ci.appveyor.com/project/RalphAS/imageshow-jl)
 
 This small package implements image `show` methods suitable for
 graphical platforms such as IJulia. It is intended to provide convenient
