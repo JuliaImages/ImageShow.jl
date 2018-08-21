@@ -32,5 +32,7 @@ build_script:
   - C:\julia\bin\julia -e "%JL_BUILD_SCRIPT%"
 
 test_script:
+  - C:\julia\bin\julia -e "using Pkg; pkg\"add https://github.com/JuliaIO/ImageMagick.jl#sd/07\"; Pkg.build(\"ImageMagick\")"
+  - C:\julia\bin\julia -e "using Pkg; pkg\"add https://github.com/JuliaIO/QuartzImageIO.jl\"; Pkg.build(\"QuartzImageIO\")"
   - echo "%JL_TEST_SCRIPT%"
   - C:\julia\bin\julia -e "%JL_TEST_SCRIPT%"
