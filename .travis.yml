@@ -14,7 +14,6 @@ notifications:
 script:
  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
  - julia --color=yes -e 'using InteractiveUtils; versioninfo(); import Pkg; Pkg.clone(pwd()); Pkg.build("ImageShow")'
- - julia -e 'using Pkg; pkg"add https://github.com/JuliaIO/QuartzImageIO.jl"; Pkg.build("QuartzImageIO")'
  - julia --color=yes -e 'import Pkg; Pkg.test("ImageShow"; coverage=VERSION < v"1.0-alpha")'
 after_success:
  # push coverage results to Codecov
