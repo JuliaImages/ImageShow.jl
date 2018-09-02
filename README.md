@@ -12,9 +12,11 @@ should typically be invoked by other library packages. Of course, power users
 are invited to check out the test suite to see what we think you might do,
 and to suggest enhancements.
 
-One user-apparent aspect (for users with good vision) is that large images
-are displayed with anti-aliased reduction if
-the Images package is loaded, but with simple down-sampling otherwise.
+One user-apparent aspect (for users with good vision) is that large
+images are displayed with anti-aliased reduction if the
+ImageTransformations package is loaded, but with simple down-sampling
+otherwise. (ImageTransformations is notably imported by Images, so
+`using Images` will provide the nicer display.)
 
 The functionality of ImageShow has historically been included in the
 Images umbrella package.
