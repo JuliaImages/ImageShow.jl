@@ -1,4 +1,4 @@
-using ImageShow, Colors, FixedPointNumbers, FileIO
+using ImageShow, Colors, FixedPointNumbers, FileIO, OffsetArrays, PaddedViews
 import ImageCore: colorview, normedview
 # We jump through some hoops so that this test script may work
 # whether or not ImageTransformations (a fortiori Images) is loaded.
@@ -8,7 +8,7 @@ import ImageCore: colorview, normedview
 
 using Test
 
-workdir = joinpath(tempdir(), "Images")
+const workdir = joinpath(tempdir(), "Images")
 if !isdir(workdir)
     mkdir(workdir)
 end
@@ -156,6 +156,23 @@ end
         # used to throw errors: https://github.com/JuliaImages/Images.jl/issues/623
         @test !applicable(ImageShow._show_odd, io, MIME"text/html"(), flat_imgs)
         @test !applicable(ImageShow._show_even, io, MIME"text/html"(), flat_imgs)
+    end
+    @testset "Non-1 indexing" begin
+        A = N0f8[0.01 0.99; 0.25 0.75]
+        Aoff = OffsetArray(A, 0:1, 2:3)
+        fn = joinpath(workdir, "oas.png")
+        open(fn, "w") do file
+            show(file, MIME("image/png"), Gray.(Aoff), minpixels=5, maxpixels=typemax(Int))
+        end
+        @test load(fn) == A[[1,1,2,2],[1,1,2,2]]
+        # Also test a type that doesn't have a specialization so as to trigger the generic
+        # fallback
+        A = PaddedView(0, reshape([1], 1, 1), (0:1, 1:2))
+        Ac = collect(A)
+        open(fn, "w") do file
+            show(file, MIME("image/png"), Gray.(A), minpixels=5, maxpixels=typemax(Int))
+        end
+        @test load(fn) == Ac[[1,1,2,2],[1,1,2,2]]
     end
 end
 try
