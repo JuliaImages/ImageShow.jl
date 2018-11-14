@@ -1,3 +1,4 @@
 @windows ImageMagick
 @linux ImageMagick
 @osx QuartzImageIO
+PaddedViews

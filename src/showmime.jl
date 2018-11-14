@@ -24,6 +24,9 @@ function Base.show(io::IO, mime::MIME"image/png", img::AbstractMatrix{C};
                    minpixels=10^4, maxpixels=10^6,
                    # Jupyter seemingly can't handle 16-bit colors:
                    mapi=x->mapc(N0f8, clamp01nan(csnormalize(x)))) where C<:Colorant
+    if Base.has_offset_axes(img)
+        img = collect(img)
+    end
     if !get(io, :full_fidelity, false)
         while _length1(img) > maxpixels
             img = _restrict1(img)  # big images
@@ -41,6 +44,9 @@ function Base.show(io::IO, mime::MIME"image/png", img::AbstractMatrix{C};
         FileIO.save(FileIO.Stream(format"PNG", io), img)
     end
 end
+
+Base.show(io::IO, mime::MIME"image/png", img::OffsetArray{C}; kwargs...) where C<:Colorant =
+    show(io, mime, parent(img); kwargs...)
 
 # Not all colorspaces are supported by all backends, so reduce types to a minimum
 csnormalize(c::AbstractGray) = Gray(c)
@@ -129,4 +135,3 @@ end
 
 _length1(A::AbstractArray) = length(eachindex(A))
 _length1(A) = length(A)
-

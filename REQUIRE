@@ -5,3 +5,4 @@ Colors
 ColorTypes 0.7.4
 FixedPointNumbers
 FileIO
+OffsetArrays
