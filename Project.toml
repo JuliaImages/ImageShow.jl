@@ -1,6 +1,6 @@
 name = "ImageShow"
 uuid = "4e3cecfd-b093-5904-9786-8bbb286a6a31"
-version = "0.2.0"
+version = "0.2.1-DEV"
 
 [deps]
 Base64 = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"
@@ -13,8 +13,10 @@ OffsetArrays = "6fe1bfb0-de20-5000-8ca7-80f57d26f881"
 Requires = "ae029012-a4dd-5104-9daa-d747884805df"
 
 [compat]
-ColorTypes = ">= 0.7.4"
-julia = ">= 1.0"
+ColorTypes = "0.7.4"
+FileIO = "1.0.1"
+Requires = "0.5.2"
+julia = "1"
 
 [extras]
 ImageMagick = "6218d12a-5da1-5696-b52f-db25d2ecc6d1"
