@@ -8,7 +8,8 @@ import Base.showable
 # This is used by IJulia (for example) to display images
 
 # showable to PNG if 2D colorant array
-showable(::MIME"image/png", img::AbstractMatrix{C}) where {C<:Colorant} = true
+# issue #12 -- 0 length image isn't showable
+showable(::MIME"image/png", img::AbstractMatrix{C}) where {C<:Colorant} = _length1(img) > 0
 
 # Colors.jl turns on SVG display of colors, which leads to poor
 # performance and weird spacing if you're displaying images. We need
