@@ -1,5 +1,4 @@
-using ImageShow, Colors, FixedPointNumbers, FileIO, OffsetArrays, PaddedViews
-import ImageCore: colorview, normedview
+using ImageShow, ImageCore, FileIO, OffsetArrays, PaddedViews
 # We jump through some hoops so that this test script may work
 # whether or not ImageTransformations (a fortiori Images) is loaded.
 # See below for details.

@@ -2,7 +2,7 @@ module ImageShow
 
 using Requires
 using FileIO
-using ImageCore, OffsetArrays, Colors, FixedPointNumbers
+using ImageCore, OffsetArrays
 
 const _have_restrict=Ref(false)
 function _use_restrict(val::Bool)
