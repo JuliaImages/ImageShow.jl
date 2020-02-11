@@ -1,10 +1,13 @@
 # ImageShow
 
-[![Build Status](https://travis-ci.org/JuliaImages/ImageShow.jl.svg?branch=master)](https://travis-ci.org/JuliaImages/ImageShow.jl)
-[![Code Coverage](https://codecov.io/gh/JuliaImages/ImageShow.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/JuliaImages/ImageShow.jl)
+[![][travis-img]][travis-url]
+[![][pkgeval-img]][pkgeval-url]
+[![][codecov-img]][codecov-url]
 
 This small package implements image `show` methods suitable for
-graphical platforms such as IJulia. It is intended to provide convenient
+graphical platforms such as [IJulia](https://github.com/JuliaLang/IJulia.jl),
+[VS Code](https://github.com/julia-vscode/julia-vscode) and [Juno](https://junolab.org/).
+It is intended to provide convenient
 inline presentation of greyscale or color images.
 
 The intention is that this package will be invisible to most users; it
@@ -21,3 +24,11 @@ otherwise. (ImageTransformations is notably imported by Images, so
 The functionality of ImageShow has historically been included in the
 Images umbrella package.
 
+<!-- URLS -->
+
+[pkgeval-img]: https://juliaci.github.io/NanosoldierReports/pkgeval_badges/I/ImageShow.svg
+[pkgeval-url]: https://juliaci.github.io/NanosoldierReports/pkgeval_badges/report.html
+[travis-img]: https://travis-ci.org/JuliaImages/ImageShow.jl.svg?branch=master
+[travis-url]: https://travis-ci.org/JuliaImages/ImageShow.jl
+[codecov-img]: https://codecov.io/github/JuliaImages/ImageShow.jl/coverage.svg?branch=master
+[codecov-url]: https://codecov.io/github/JuliaImages/ImageShow.jl?branch=master
