@@ -3,6 +3,8 @@ module ImageShow
 using Requires
 using FileIO
 using ImageCore
+using Reexport
+@reexport using MosaicViews
 
 const _have_restrict=Ref(false)
 function _use_restrict(val::Bool)
