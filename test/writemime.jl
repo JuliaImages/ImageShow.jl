@@ -1,11 +1,8 @@
-using ImageShow, ImageCore, FileIO, OffsetArrays, PaddedViews
 # We jump through some hoops so that this test script may work
 # whether or not ImageTransformations (a fortiori Images) is loaded.
 # See below for details.
 
 # don't import ImageTransformations: restrict
-
-using Test
 
 const workdir = joinpath(tempdir(), "Images")
 if !isdir(workdir)
@@ -180,6 +177,5 @@ try
 catch
     # do nothing
 end
-
 
 nothing
