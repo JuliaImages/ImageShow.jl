@@ -46,6 +46,9 @@ function Base.show(io::IO, mime::MIME"image/png", img::AbstractMatrix{C};
     end
 end
 
+Base.show(io::IO, mime::MIME"image/png", img::OffsetArray{C}; kwargs...) where C<:Colorant =
+    show(io, mime, parent(img); kwargs...)
+
 # Not all colorspaces are supported by all backends, so reduce types to a minimum
 csnormalize(c::AbstractGray) = Gray(c)
 csnormalize(c::Color) = RGB(c)
