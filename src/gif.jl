@@ -26,7 +26,7 @@ julia> ImageShow.@gif testimage("mri-stack")
 """
 macro gif(img)
     if displayable(MIME"image/gif"())
-        :(display(AnimatedGIF($(esc(img)))))
+        :(AnimatedGIF($(esc(img))))
     else
         esc(img)
     end
