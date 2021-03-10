@@ -40,9 +40,9 @@ function Base.show(io::IO, mime::MIME"image/png", img::AbstractMatrix{C};
             r[[coords_spatial(img)...]] .= fac
             img = repeat(img, inner=r)
         end
-        FileIO.save(FileIO.Stream(format"PNG", io), img, mapi=mapi)
+        FileIO.save(_png_stream(io), img, mapi=mapi)
     else
-        FileIO.save(FileIO.Stream(format"PNG", io), img)
+        FileIO.save(_png_stream(io), img)
     end
 end
 
