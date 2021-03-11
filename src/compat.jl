@@ -1,6 +1,6 @@
 if isdefined(FileIO, :action)
     # FileIO >= 1.6
-    _png_stream(io) = FileIO.Stream{format"PNG"}(io)
+    _format_stream(format, io) = FileIO.Stream{format}(io)
 else
-    _png_stream(io) = FileIO.Stream(format"PNG", io)
+    _format_stream(format, io) = FileIO.Stream(format, io)
 end
