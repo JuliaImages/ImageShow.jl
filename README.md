@@ -10,16 +10,41 @@ graphical platforms such as [IJulia](https://github.com/JuliaLang/IJulia.jl),
 It is intended to provide convenient
 inline presentation of greyscale or color images.
 
-The intention is that this package will be invisible to most users; it
-should typically be invoked by other library packages. Of course, power users
-are invited to check out the test suite to see what we think you might do,
-and to suggest enhancements.
+Things that users of `ImageShow` need to know:
 
-One user-apparent aspect (for users with good vision) is that large
-images are displayed with anti-aliased reduction if the
-ImageTransformations package is loaded, but with simple down-sampling
-otherwise. (ImageTransformations is notably imported by Images, so
-`using Images` will provide the nicer display.)
+* Without `ImageShow`, 2d image `AbstractMatrix{<:Colorant}` will be encoded and displayed as a SVG image, which is not performant
+  for generic image.
+* Once you load this package, 2d image will be encoded and displayed as a PNG image. To encode the
+  data as PNG image, either `ImageIO` or `ImageMagick` should be installed.
+* Advanced anti-aliased reduction is applied if `ImageTransformations` is loaded.
+* `using Images` automatically loads `ImageShow` and `ImageTransformations` for you.
+
+## Functions
+
+This package also provides a non-exported function `gif` to interpret your 3D image or 2d images as
+an animated GIF image. (Only available for Julia at least v1.3.0)
+
+```julia
+using ImageShow, TestImages, ImageTransformations
+
+# 3d image
+ImageShow.gif(testimage("mri-stack"))
+
+# 2d images
+toucan = testimage("toucan") # 150×162 RGBA image
+moon = testimage("moon") # 256×256 Gray image
+ImageShow.gif([toucan, moon])
+
+# a do-function version
+img = testimage("cameraman")
+ImageShow.gif(-π/4:π/16:π/4]; fps=3) do θ
+    imrotate(img, θ, axes(img))
+end
+```
+
+See also `mosaic`, provided by `MosaicViews`/`ImageCore`, for a 2d alternative of `gif`.
+
+# Acknowledgement
 
 The functionality of ImageShow has historically been included in the
 Images umbrella package.

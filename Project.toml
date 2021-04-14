@@ -8,18 +8,22 @@ FileIO = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
 ImageCore = "a09fc81d-aa75-5fe9-8630-4744c3626534"
 OffsetArrays = "6fe1bfb0-de20-5000-8ca7-80f57d26f881"
 Requires = "ae029012-a4dd-5104-9daa-d747884805df"
+StackViews = "cae243ae-269e-4f55-b966-ac2d0dc13c15"
 
 [compat]
 FileIO = "1"
 ImageCore = "0.8.1"
 OffsetArrays = "0.8, 0.9, 0.10, 0.11, 1"
 Requires = "0.5.2, 1"
+StackViews = "0.1.1"
 julia = "1"
 
 [extras]
+ImageDistances = "51556ac3-7006-55f5-8cb3-34580c88182d"
 ImageMagick = "6218d12a-5da1-5696-b52f-db25d2ecc6d1"
-PaddedViews = "5432bcbf-9aad-5242-b902-cca2824c8663"
+Suppressor = "fd094767-a336-5f1f-9728-57cf17d0bbfb"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+TestImages = "5e47fb64-e119-507b-a336-dd2b206d9990"
 
 [targets]
-test = ["ImageMagick", "PaddedViews", "Test"]
+test = ["ImageDistances", "ImageMagick", "Suppressor", "Test", "TestImages"]
