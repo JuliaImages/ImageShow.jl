@@ -10,22 +10,22 @@ graphical platforms such as [IJulia](https://github.com/JuliaLang/IJulia.jl),
 It is intended to provide convenient
 inline presentation of greyscale or color images.
 
+Things that users of `ImageShow` need to know:
 
-Things that users of `ImageShow` might need to know:
-
-* Once you load this package, `AbstractMatrix{<:Colorant}` will be displayed as PNG image.
-* Advanced anti-aliased reduction is applied if `ImageTransformations` are loaded.
+* Without `ImageShow`, 2d image `AbstractMatrix{<:Colorant}` will be encoded and displayed as a SVG image, which is not performant
+  for generic image.
+* Once you load this package, 2d image will be encoded and displayed as a PNG image. To encode the
+  data as PNG image, either `ImageIO` or `ImageMagick` should be installed.
+* Advanced anti-aliased reduction is applied if `ImageTransformations` is loaded.
 * `using Images` automatically loads `ImageShow` and `ImageTransformations` for you.
 
 ## Functions
 
 This package also provides a non-exported function `gif` to interpret your 3D image or 2d images as
-an animated GIF image.
+an animated GIF image. (Only available for Julia at least v1.3.0)
 
 ```julia
 using ImageShow, TestImages, ImageTransformations
-# Or
-# using Images, TestImages
 
 # 3d image
 ImageShow.gif(testimage("mri-stack"))

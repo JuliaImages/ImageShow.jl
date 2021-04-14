@@ -14,7 +14,8 @@ struct AnimatedGIF{T, A<:AbstractArray} <: AbstractArray{T, 3}
 end
 AnimatedGIF(data::AbstractArray; kwargs...) = AnimatedGIF{eltype(data), typeof(data)}(data; kwargs...)
 
-Base.showable(::MIME"image/gif", agif::AnimatedGIF) = true
+# Display gif requires ImageMagick v1.2.0, which requires Julia 1.3
+Base.showable(::MIME"image/gif", agif::AnimatedGIF) = VERSION >= v"1.3.0"
 function Base.show(io::IO, ::MIME"image/gif", agif::AnimatedGIF)
     FileIO.save(_format_stream(format"GIF", io), agif.data; fps=agif.fps)
 end
@@ -28,6 +29,10 @@ Base.@propagate_inbounds Base.getindex(A::AnimatedGIF, inds::Vararg{Int}) = geti
     gif(frames; kwargs...)
 
 Convert 3D `img` or 2D frame list `frames` to animated gif array.
+
+!!! compat "ImageMagick 1.2"
+    `ImageMagick` at least v1.2.0 (which requires Julia at least v1.3.0) is required to generate
+    gif image. You can install it via `pkg> add ImageMagick`.
 
 # Arguments
 
@@ -54,10 +59,6 @@ using TestImages, ImageShow, ImageTransformations
 img = testimage("cameraman")
 ImageShow.gif([imrotate(img, θ, axes(img)) for θ in -π/4:π/16:π/4]; fps=3)
 ```
-
-!!! note
-    `ImageMagick` backend is required to generate gif. You can install it via
-    `pkg> add ImageMagick`.
 
 See also `mosaic`, provided by `MosaicViews`/`ImageCore`, for a 2d alternative of `gif`.
 """
