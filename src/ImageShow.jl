@@ -17,6 +17,7 @@ function __init__()
 end
 include("showmime.jl")
 include("gif.jl")
+include("multipage.jl")
 include("compat.jl")
 
 # facilitate testing from importers
