@@ -61,6 +61,7 @@ using ImageDistances
         B = fill(2.0, 2, 2)
         gif = ImageShow.gif([A, B])
         @test axes(gif) == (1:4, 1:8, 1:2)
+        @test size(gif) == (4, 8, 2)
         cv = channelview(gif)
         @test all(cv[:, :, 1] .== 1.0) && all(cv[2:3, 4:5, 2] .== 2.0)
     end
