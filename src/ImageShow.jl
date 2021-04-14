@@ -4,6 +4,10 @@ using Requires
 using FileIO
 using ImageCore, OffsetArrays
 
+using StackViews
+using ImageCore.MappedArrays
+using ImageCore.PaddedViews
+
 const _have_restrict=Ref(false)
 function _use_restrict(val::Bool)
     _have_restrict[] = val
