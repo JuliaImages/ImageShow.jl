@@ -10,7 +10,7 @@ using ImageDistances
     # This might be a non-error in future
     @test_throws ArgumentError ImageShow.gif(toucan, moon)
     warning_msg = Suppressor.@capture_err ImageShow.gif([toucan, moon]; fps=0.5)
-    @test contains(warning_msg, "FPS should be larger than 1")
+    @test occursin("FPS should be larger than 1", warning_msg)
 
     @testset "show" begin
         # TODO: the `fps` keyword is unable to test
