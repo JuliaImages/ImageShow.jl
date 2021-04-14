@@ -37,7 +37,7 @@ ImageShow.gif([toucan, moon])
 
 # a do-function version
 img = testimage("cameraman")
-ImageShow.gif(-π/4:π/16:π/4]; fps=3) do θ
+ImageShow.gif(-π/4:π/16:π/4; fps=3) do θ
     imrotate(img, θ, axes(img))
 end
 ```
