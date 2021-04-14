@@ -58,6 +58,8 @@ ImageShow.gif([imrotate(img, θ, axes(img)) for θ in -π/4:π/16:π/4]; fps=3)
 !!! note
     `ImageMagick` backend is required to generate gif. You can install it via
     `pkg> add ImageMagick`.
+
+See also `mosaic`, provided by `MosaicViews`/`ImageCore`, for a 2d alternative of `gif`.
 """
 gif(img::AbstractArray{<:Colorant, 3}; kwargs...) = AnimatedGIF(img; kwargs...)
 gif(img::AbstractArray{<:Real, 3}; kwargs...) = AnimatedGIF(of_eltype(Gray, img); kwargs...)
