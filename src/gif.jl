@@ -22,7 +22,6 @@ end
 Base.size(A::AnimatedGIF) = size(A.data)
 Base.axes(A::AnimatedGIF) = axes(A.data)
 Base.@propagate_inbounds Base.getindex(A::AnimatedGIF, inds::Vararg{Int}) = getindex(A.data, inds...)
-Base.@propagate_inbounds Base.setindex!(A::AnimatedGIF, value, inds::Vararg{Int}) = setindex!(A.data, value, inds...)
 
 """
     gif(img; kwargs...)
@@ -32,7 +31,7 @@ Convert 3D `img` or 2D frame list `frames` to animated gif array.
 
 # Arguments
 
-- `img::AbstractArray{T, 3}`: the last dimension is time axis.
+- `img::AbstractArray{T, 3}`: the last dimension is the time axis.
 - `frames`: vector of 2d arrays.
 
 # Parameters
