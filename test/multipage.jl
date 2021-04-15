@@ -4,7 +4,7 @@ using Test
 
 function check_summary(n, msg)
     function generate_summary_regex(n)
-        summary_regex = raw"Frame: \d+/\d+ FPS: \d+\.\d+\s+\nexit: ctrl-c\. play\/pause: space-bar\. seek: arrow keys\n"
+        summary_regex = raw"""Frame: \d+/\d+ FPS: \d+\.\d+\s+\nexit: "q" play\/pause: "space-bar" seek: "arrow keys"\n"""
         Regex(mapreduce(i->summary_regex, (x,y)->x*raw".*"*y, 1:n))
     end
     function _check_summary(n, msg)
