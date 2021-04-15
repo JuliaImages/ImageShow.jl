@@ -96,7 +96,7 @@ end
         # Although it's a no-op, it gets blocked at fps=2, which is about 0.5 second
         f() = nothing
         f() # precompile it
-        t = @elapsed ImageShow.fixed_fps(f, 2)
-        @test 0.4 < t < 0.6
+        t = @elapsed ImageShow.fixed_fps(f, 0.5)
+        @test 1.5 < t < 2.5
     end
 end
