@@ -90,6 +90,9 @@ function _play(
             else
                 error("Control value $control_value not recognized.")
             end
+            sleep(1e-2) # 10ms should be enough for most keyboard event
+
+            # @show control_value frame_idx paused should_exit
         end
     end
 
@@ -99,6 +102,8 @@ function _play(
         while !should_exit && 1<= frame_idx <= nframes
             # when paused, only update the frame when last_frame_idx changes, i.e., only when
             # user hit arrow keys.
+            # Otherwise the same frame will be rendered again and again and again and increases
+            # the plot count in the plotpane endlessly.
             if frame_idx != last_frame_idx
                 fps_value = paused ? 0 : actual_fps
                 actual_fps = fixed_fps(fps) do
@@ -111,14 +116,20 @@ function _play(
                 paused = true
             end
             paused || (frame_idx += 1)
-            paused && sleep(0.001)
+            # Wait for keyboard event update
+            # This does not mean fps is at most 100
+            paused && sleep(1e-2)
         end
     catch e
         e isa InterruptException || rethrow(e)
     finally
-        # stop running read_key task so that REPL/stdin is not blocked
-        @async Base.throwto(keytask, InterruptException())
-        wait(keytask)
+        # Stop the running read_key task so that REPL/stdin is not blocked.
+        # If it's an IOBuffer then there's no need to do so becaused it will exit eventually
+        # at `should_exit`.
+        if !isa(keyboard_io, IOBuffer)
+            @async Base.throwto(keytask, InterruptException())
+            wait(keytask)
+        end
     end
     return nothing
 end

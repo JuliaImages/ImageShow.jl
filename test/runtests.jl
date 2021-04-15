@@ -8,7 +8,6 @@ using Test
         include("gif.jl")
     end
 
-    @info "There are some keyboard IO tests. To make sure test passes as expected, please don't press any key until test finishes."
     include("keyboard.jl")
     include("multipage.jl")
 end

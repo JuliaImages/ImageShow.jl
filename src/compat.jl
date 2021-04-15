@@ -4,3 +4,8 @@ if isdefined(FileIO, :action)
 else
     _format_stream(format, io) = FileIO.Stream(format, io)
 end
+
+
+if VERSION < v"1.2.0"
+    isnothing(x) = x === nothing
+end
