@@ -1,37 +1,51 @@
+include("keyboard.jl")
+
 ansi_moveup(n::Int) = string("\e[", n, "A")
 const ansi_movecol1 = "\e[1G"
 
 """
     play(framestack::AbstractVector{T}; kwargs...) where {T<:AbstractArray}
-    play(arr::T, dim::Int; kwargs...)
+    play(arr::T, dim=3; kwargs...)
 
 Play a video of a framestack of image arrays, or 3D array along dimension `dim`.
 
 Control keys:
 - `p` or `space-bar`: pause/resume
-- `f`, `←`(left arrow), or `↑`(up arrow): step backward
-- `b`, `→`(right arrow), or `↓`(down arrow): step forward
+- `b`, `←`(left arrow), or `↑`(up arrow): step backward
+- `f`, `→`(right arrow), or `↓`(down arrow): step forward
 - `ctrl-c` or `q`: exit
 
 kwargs:
 
-- `fps::Real=30`
+- `fps`: frame per second.
 
 # Examples
 
 ```julia
-julia> using TestImages, ImageShow
+using TestImages, ImageShow
 
-julia> img3d = testimage("mri-stack") |> collect;
+img3d = RGB.(testimage("mri-stack"))
+ImageShow.play(img3d)
 
-julia> ImageShow.play(img3d, 3)
-
-julia> framestack = [img3d[:, :, i] for i in axes(img3d, 3)];
-
-julia> ImageShow.play(framestack)
+framestack = [img3d[:, :, i] for i in axes(img3d, 3)];
+ImageShow.play(framestack)
 ```
 """
-function play(framestack::AbstractVector{<:AbstractArray}; fps::Real=30, paused=false)
+function play(framestack::AbstractVector{<:AbstractMatrix}; fps::Real=min(10, length(framestack)÷2))
+    # NOTE: the default fps is chosen purely by experience and may be changed in the future
+    _play(framestack; fps=fps, paused=false, quit_after_play=true)
+end
+play(img::AbstractArray{<:Colorant, 3}, dim=3; kwargs...) = play(map(i->selectdim(img, dim, i), axes(img, dim)); kwargs...)
+
+function _play(
+        framestack::AbstractVector{<:AbstractMatrix};
+        fps, paused, quit_after_play,
+        # The following keywords are for advanced usages(e.g., test), common users are not expected
+        # to use them directly.
+        display_io::Union{Nothing, IO}=nothing,
+        summary_io::IO=stdout,
+        keyboard_io::IO=stdin
+)
     nframes = length(framestack)
 
     # vars
@@ -44,18 +58,24 @@ function play(framestack::AbstractVector{<:AbstractArray}; fps::Real=30, paused=
         cols, rows = size(frame)
 
         if !first_frame
-            print(ansi_moveup(2), ansi_movecol1)
+            print(summary_io, ansi_moveup(2), ansi_movecol1)
         end
-        println("Frame: $frame_idx/$nframes FPS: $(round(actual_fps, digits=1))", " "^5)
-        println("exit: ctrl-c. play/pause: space-bar. seek: arrow keys")
+        println(summary_io, "Frame: $frame_idx/$nframes FPS: $(round(actual_fps, digits=1))", " "^5)
+        println(summary_io, "exit: ctrl-c. play/pause: space-bar. seek: arrow keys")
 
-        display(frame)
+        # When calling `display(MIME"image/png"(), img)`, VSCode/IJulia/Atom will eventually
+        # create an `IOBuffer` to get the Base64+PNG encoded data, and send the encoded data to
+        # the outside display pipeline, e.g., as JSON message.
+        # For test purpose, we could directly show it to our manually created IO.
+        isnothing(display_io) ? display(frame) : show(display_io, MIME"image/png"(), frame)
     end
+    # These codes live in ImageShow and thus MIME"image/png" is always showable
+    @assert showable(MIME"image/png"(), framestack[frame_idx])
     render_frame(frame_idx, actual_fps; first_frame=true)
 
     keytask = @async begin
         while !should_exit
-            control_value = read_key()
+            control_value = read_key(keyboard_io)
 
             if control_value == :CONTROL_BACKWARD
                 frame_idx = max(frame_idx-1, 1)
@@ -86,6 +106,10 @@ function play(framestack::AbstractVector{<:AbstractArray}; fps::Real=30, paused=
                 end
                 last_frame_idx = frame_idx
             end
+            if !quit_after_play && frame_idx == nframes
+                # don't immediately quit the play
+                paused = true
+            end
             paused || (frame_idx += 1)
             paused && sleep(0.001)
         end
@@ -98,67 +122,7 @@ function play(framestack::AbstractVector{<:AbstractArray}; fps::Real=30, paused=
     end
     return nothing
 end
-play(img::AbstractArray{<:Colorant}, dim; kwargs...) = play(map(i->selectdim(img, dim, i), axes(img, dim)); kwargs...)
 
-# minimal keyboard event support
-"""
-    read_key() -> control_value
-
-read control key from keyboard input.
-
-# Reference table
-
-| value               | control_value     | effect                 |
-| ------------------- | ----------------- | -------------------    |
-| UP, LEFT, f, F      | :CONTROL_BACKWARD | show previous frame    |
-| DOWN, RIGHT, b, B   | :CONTROL_FORWARD  | show next frame        |
-| SPACE, p, P         | :CONTROL_PAUSE    | pause/resume play      |
-| CTRL-c, q, Q        | :CONTROL_EXIT     | exit current play      |
-| others...           | :CONTROL_VOID     | no effect              |
-"""
-function read_key()
-    setraw!(io, raw) = ccall(:jl_tty_set_mode, Int32, (Ptr{Cvoid},Int32), io.handle, raw)
-    control_value = :CONTROL_VOID
-    try
-        setraw!(stdin, true)
-        keyin = read(stdin, Char)
-        if keyin == '\e'
-            # some special keys are more than one byte, e.g., left key is `\e[D`
-            # reference: https://en.wikipedia.org/wiki/ANSI_escape_code
-            keyin = read(stdin, Char)
-            if keyin == '['
-                keyin = read(stdin, Char)
-                if keyin in ['A', 'D'] # up, left
-                    control_value = :CONTROL_BACKWARD
-                elseif keyin in ['B', 'C'] # down, right
-                    control_value = :CONTROL_FORWARD
-                end
-            end
-        elseif 'A' <= keyin <= 'Z' || 'a' <= keyin <= 'z'
-            keyin = lowercase(keyin)
-            if keyin == 'p'
-                control_value = :CONTROL_PAUSE
-            elseif keyin == 'q'
-                control_value = :CONTROL_EXIT
-            elseif keyin == 'f'
-                control_value = :CONTROL_FORWARD
-            elseif keyin == 'b'
-                control_value = :CONTROL_BACKWARD
-            end
-        elseif keyin == ' '
-            control_value = :CONTROL_PAUSE
-        end
-    catch e
-        if e isa InterruptException # Ctrl-C
-            control_value = :CONTROL_EXIT
-        else
-            rethrow(e)
-        end
-    finally
-        setraw!(stdin, false)
-    end
-    return control_value
-end
 
 """
     fixed_fps(f::Function, fps::Real)
