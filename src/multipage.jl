@@ -7,7 +7,7 @@ const ansi_movecol1 = "\e[1G"
     play(framestack::AbstractVector{T}; kwargs...) where {T<:AbstractArray}
     play(arr::T, dim=3; kwargs...)
 
-Play a video of a framestack of image arrays, or 3D array along dimension `dim`.
+(Experimental) Play a video of a framestack of image arrays, or 3D array along dimension `dim`.
 
 !!! compat "ImageShow 0.3"
     The `play` function requires at least ImageShow 0.3.
@@ -48,7 +48,7 @@ play(img::AbstractArray{<:Colorant, 3}, dim=3; kwargs...) = play(map(i->selectdi
     play(f, Xs; kwargs...)
     play(f, Xs, Ys...; kwargs...)
 
-A lazy version of `play([f(X) for X in Xs]; kwargs...)` that allocates memory only when needed.
+(Experimental) A lazy version of `play([f(X) for X in Xs]; kwargs...)` that allocates memory only when needed.
 
 !!! compat "ImageShow 0.3"
     The `play` function requires at least ImageShow 0.3.
@@ -87,7 +87,7 @@ play(frames::AbstractMappedArray; kwargs...) = play(collect(frames); kwargs...)
     explore(framestack::AbstractVector{T}; kwargs...) where {T<:AbstractArray}
     explore(arr::T, dim=3; kwargs...)
 
-Play a video of a framestack of image arrays, or 3D array along dimension `dim`.
+(Experimental) Play a video of a framestack of image arrays, or 3D array along dimension `dim`.
 
 !!! compat "ImageShow 0.3"
     The `play` function requires at least ImageShow 0.3.
@@ -104,7 +104,7 @@ explore(img::AbstractArray{<:Colorant, 3}, dim=3; kwargs...) = explore(map(i->se
     explore(f, Xs; kwargs...)
     explore(f, Xs, Ys...; kwargs...)
 
-A lazy version of `explore([f(X) for X in Xs]; kwargs...)` that allocates memory only when needed.
+(Experimental)  A lazy version of `explore([f(X) for X in Xs]; kwargs...)` that allocates memory only when needed.
 """
 explore(f, arg1, args...; kwargs...) = explore(mappedarray(f, arg1, args...); kwargs...)
 # MappedArrays are not efficient here https://github.com/JuliaArrays/MappedArrays.jl/issues/46

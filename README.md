@@ -24,7 +24,7 @@ Things that users of `ImageShow` need to know:
 This package provides three non-exported functions `play`/`explore` and `gif` to interpret your 3D
 image or 2d images as either a video sequence or a gif.
 
-- `play`/`explore` are interactive tools; it show images frame by frame as video sequence.
+- (Experimental) `play`/`explore` are interactive tools; it show images frame by frame as video sequence.
 - `gif` is non-interactive; it encodes the image as gif.
 
 Feel free to replace `gif` with `play`/`explore` and see how it works:
