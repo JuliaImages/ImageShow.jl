@@ -59,3 +59,33 @@ end
 
 _setraw!(io::Base.TTY, raw) = ccall(:jl_tty_set_mode, Int32, (Ptr{Cvoid},Int32), io.handle, raw)
 _setraw!(::IO, raw) = nothing
+
+# keytask handling
+# This works, although I have no idea how it is working internally -- Johnny Chen
+# https://discourse.julialang.org/t/how-to-kill-thread/34236/8
+if VERSION >= v"1.3"
+    struct Stop end
+    struct Continue end
+    function safe_hanging(ch::Channel)
+        signal = Continue()
+        while true
+            isready(ch) && (signal = take!(ch))
+            signal == Stop() && break
+            sleep(1e-4)
+        end
+    end
+
+    make_channel(task) = Channel(safe_hanging, taskref=task, spawn=true)
+    function safe_kill(task, ch::Channel)
+        put!(ch, Stop())
+        wait(task)
+    end
+else
+    # non-safe quit
+    make_channel(task) = task
+    function safe_kill(task, ch)
+        # this is not safe at all
+        @async Base.throwto(keytask, InterruptException())
+        wait(task)
+    end
+end

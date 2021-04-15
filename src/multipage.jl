@@ -9,33 +9,57 @@ const ansi_movecol1 = "\e[1G"
 
 Play a video of a framestack of image arrays, or 3D array along dimension `dim`.
 
-Control keys:
+!!! compat "ImageShow 0.3"
+    The `play` function requires at least ImageShow 0.3.
+
+# Control keys
+
 - `p` or `space-bar`: pause/resume
 - `b`, `←`(left arrow), or `↑`(up arrow): step backward
 - `f`, `→`(right arrow), or `↓`(down arrow): step forward
 - `ctrl-c` or `q`: exit
 
-kwargs:
+# Parameters
 
 - `fps`: frame per second.
 
 # Examples
 
 ```julia
-using TestImages, ImageShow
+using ImageCore, TestImages, ImageShow
 
 img3d = RGB.(testimage("mri-stack"))
-ImageShow.play(img3d)
+ImageShow.play(img3d) # or ImageShow.play(img3d, 3)
 
 framestack = [img3d[:, :, i] for i in axes(img3d, 3)];
 ImageShow.play(framestack)
 ```
+
+See also [`explore`](@ref ImageShow.explore) for a similar version that pauses at the start
+and the end.
 """
 function play(framestack::AbstractVector{<:AbstractMatrix}; fps::Real=min(10, length(framestack)÷2))
     # NOTE: the default fps is chosen purely by experience and may be changed in the future
     _play(framestack; fps=fps, paused=false, quit_after_play=true)
 end
 play(img::AbstractArray{<:Colorant, 3}, dim=3; kwargs...) = play(map(i->selectdim(img, dim, i), axes(img, dim)); kwargs...)
+
+"""
+    explore(framestack::AbstractVector{T}; kwargs...) where {T<:AbstractArray}
+    explore(arr::T, dim=3; kwargs...)
+
+Play a video of a framestack of image arrays, or 3D array along dimension `dim`.
+
+!!! compat "ImageShow 0.3"
+    The `play` function requires at least ImageShow 0.3.
+
+Same as [`play`](@ref), but will pause at the start and the end of the play. For the detailed
+usage, please see the [`play` documentation](@ref ImageShow.play).
+"""
+function explore(framestack::AbstractVector{<:AbstractMatrix}; fps::Real=min(10, length(framestack)÷2))
+    _play(framestack; fps=fps, paused=true, quit_after_play=false)
+end
+explore(img::AbstractArray{<:Colorant, 3}, dim=3; kwargs...) = explore(map(i->selectdim(img, dim, i), axes(img, dim)); kwargs...)
 
 function _play(
         framestack::AbstractVector{<:AbstractMatrix};
@@ -91,10 +115,10 @@ function _play(
                 error("Control value $control_value not recognized.")
             end
             sleep(1e-2) # 10ms should be enough for most keyboard event
-
             # @show control_value frame_idx paused should_exit
         end
     end
+    keytask_channel = make_channel(keytask)
 
     try
         last_frame_idx = frame_idx
@@ -127,13 +151,11 @@ function _play(
         # If it's an IOBuffer then there's no need to do so becaused it will exit eventually
         # at `should_exit`.
         if !isa(keyboard_io, IOBuffer)
-            @async Base.throwto(keytask, InterruptException())
-            wait(keytask)
+            safe_kill(keytask, keytask_channel)
         end
     end
     return nothing
 end
-
 
 """
     fixed_fps(f::Function, fps::Real)
