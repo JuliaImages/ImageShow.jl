@@ -7,4 +7,7 @@ using Test
     if VERSION >= v"1.3.0"
         include("gif.jl")
     end
+
+    include("keyboard.jl")
+    include("multipage.jl")
 end

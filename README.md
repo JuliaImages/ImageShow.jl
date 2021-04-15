@@ -21,23 +21,30 @@ Things that users of `ImageShow` need to know:
 
 ## Functions
 
-This package also provides a non-exported function `gif` to interpret your 3D image or 2d images as
-an animated GIF image. (Only available for Julia at least v1.3.0)
+This package provides three non-exported functions `play`/`explore` and `gif` to interpret your 3D
+image or 2d images as either a video sequence or a gif.
+
+- (Experimental) `play`/`explore` are interactive tools; it show images frame by frame as video sequence.
+- `gif` is non-interactive; it encodes the image as gif.
+
+Feel free to replace `gif` with `play`/`explore` and see how it works:
 
 ```julia
 using ImageShow, TestImages, ImageTransformations
 
 # 3d image
-ImageShow.gif(testimage("mri-stack"))
+img3d = testimage("mri-stack") |> collect
+ImageShow.gif(img3d)
 
 # 2d images
 toucan = testimage("toucan") # 150×162 RGBA image
 moon = testimage("moon") # 256×256 Gray image
-ImageShow.gif([toucan, moon])
+framestack = [toucan, moon];
+ImageShow.gif(framestack)
 
 # a do-function version
 img = testimage("cameraman")
-ImageShow.gif(-π/4:π/16:π/4; fps=3) do θ
+ImageShow.gif(-π/4:π/64:π/4; fps=10) do θ
     imrotate(img, θ, axes(img))
 end
 ```
