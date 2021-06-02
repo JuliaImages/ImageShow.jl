@@ -30,7 +30,7 @@ function Base.show(io::IO, mime::MIME"image/png", img::AbstractMatrix{C};
     end
     if !get(io, :full_fidelity, false)
         while _length1(img) > maxpixels
-            img = _restrict1(img)  # big images
+            img = restrict(img)  # big images
         end
         npix = _length1(img)
         if npix < minpixels
@@ -122,16 +122,6 @@ function show_element(io::IOContext, img)
     show(b64pipe, MIME"image/png"(), im_resized)
     write(io, read(seekstart(io2)))
     write(io,"\">")
-end
-
-function _restrict1(img)
-    if _have_restrict[]
-        res = ImageTransformations.restrict(img)
-    else
-        @info "For better quality inline display of large images or thumbnails, load the Images package." maxlog=1
-        res = img[1:2:end,1:2:end]
-    end
-    res
 end
 
 _length1(A::AbstractArray) = length(eachindex(A))

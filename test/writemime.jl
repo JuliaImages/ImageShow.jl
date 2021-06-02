@@ -1,10 +1,6 @@
 using ImageShow, ImageCore, FileIO, OffsetArrays
 using ImageCore: PaddedViews
-# We jump through some hoops so that this test script may work
-# whether or not ImageTransformations (a fortiori Images) is loaded.
-# See below for details.
-
-# don't import ImageTransformations: restrict
+import ImageBase: restrict
 
 using Test
 
@@ -95,36 +91,13 @@ end
     end
 end
 
-# We do this after the FileIO backend has gotten comfortable.
-const have_restrict = Ref{Bool}(false)
-const restrict_mod = Ref{Module}()
-for mod in values(Base.loaded_modules)
-    if string(mod) == "ImageTransformations"
-        have_restrict[] = true
-        restrict_mod[] = mod
-    end
-end
-
-if have_restrict[]
-    @info "Tests will use restrict from ImageTransformations"
-    const restrict = restrict_mod[].restrict
-end
-
 @testset "Big images and matrices" begin
     @testset "big images (use of restrict)" begin
         A = N0f8[0.01 0.4 0.99; 0.25 0.8 0.75; 0.6 0.2 0.0]
-        if have_restrict[]
-            Ar = restrict(A)
-        else
-            Ar = N0f8[0.01 0.99; 0.6 0.0]
-        end
+        Ar = restrict(A)
         fn = joinpath(workdir, "writemime.png")
         open(fn, "w") do file
-            if !have_restrict[]
-                @test_logs (:info, r"^For better quality") show(file, MIME("image/png"), Gray.(A), minpixels=0, maxpixels=5)
-            else
-                show(file, MIME("image/png"), Gray.(A), minpixels=0, maxpixels=5)
-            end
+            show(file, MIME("image/png"), Gray.(A), minpixels=0, maxpixels=5)
         end
         @test load(fn) == N0f8.(Ar)
         # a genuinely big image (tests the defaults)
@@ -134,11 +107,7 @@ end
             show(file, MIME("image/png"), abig, maxpixels=10^6)
         end
         b = load(fn)
-        if have_restrict[]
-            btmp = restrict(abig, (1,2))
-        else
-            btmp = abig[1:2:end,1:2:end]
-        end
+        btmp = restrict(abig, (1,2))
         @test b == N0f8.(btmp)
     end
     @testset "display matrix of images" begin
