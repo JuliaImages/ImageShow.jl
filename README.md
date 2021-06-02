@@ -16,8 +16,7 @@ Things that users of `ImageShow` need to know:
   for generic image.
 * Once you load this package, 2d image will be encoded and displayed as a PNG image. To encode the
   data as PNG image, either `ImageIO` or `ImageMagick` should be installed.
-* Advanced anti-aliased reduction is applied if `ImageTransformations` is loaded.
-* `using Images` automatically loads `ImageShow` and `ImageTransformations` for you.
+* `using Images` automatically loads `ImageShow` for you.
 
 ## Functions
 

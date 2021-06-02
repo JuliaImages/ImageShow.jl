@@ -5,16 +5,16 @@ version = "0.3.1"
 [deps]
 Base64 = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"
 FileIO = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
+ImageBase = "c817782e-172a-44cc-b673-b171935fbb9e"
 ImageCore = "a09fc81d-aa75-5fe9-8630-4744c3626534"
 OffsetArrays = "6fe1bfb0-de20-5000-8ca7-80f57d26f881"
-Requires = "ae029012-a4dd-5104-9daa-d747884805df"
 StackViews = "cae243ae-269e-4f55-b966-ac2d0dc13c15"
 
 [compat]
 FileIO = "1"
-ImageCore = "0.8.1, 0.9"
+ImageBase = "0.1"
+ImageCore = "0.9"
 OffsetArrays = "0.8, 0.9, 0.10, 0.11, 1"
-Requires = "0.5.2, 1"
 StackViews = "0.1.1"
 julia = "1"
 
