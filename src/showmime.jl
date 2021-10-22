@@ -25,9 +25,7 @@ function Base.show(io::IO, mime::MIME"image/png", img::AbstractMatrix{C};
                    minpixels=10^4, maxpixels=10^6,
                    # Jupyter seemingly can't handle 16-bit colors:
                    mapi=x->mapc(N0f8, clamp01nan(csnormalize(x)))) where C<:Colorant
-    if Base.has_offset_axes(img)
-        img = collect(img)
-    end
+    img = enforce_standard_dense_array(img)
     if !get(io, :full_fidelity, false)
         while _length1(img) > maxpixels
             img = restrict(img)  # big images
@@ -53,6 +51,13 @@ Base.show(io::IO, mime::MIME"image/png", img::OffsetArray{C}; kwargs...) where C
 csnormalize(c::AbstractGray) = Gray(c)
 csnormalize(c::Color) = RGB(c)
 csnormalize(c::Colorant) = RGBA(c)
+
+# Unless we have PNG IO backend that works on generic array types, we have to eagerly
+# convert it to dense array types
+# On performance: if the array type(e.g., OffsetArray) has efficient convert method to Array
+# then this is almost a no-op
+enforce_standard_dense_array(A::AbstractArray) = convert(Array, A)
+enforce_standard_dense_array(A::DenseArray) = A
 
 const ColorantMatrix{T<:Colorant} = AbstractMatrix{T}
 

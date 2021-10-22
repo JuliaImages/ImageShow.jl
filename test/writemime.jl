@@ -1,6 +1,7 @@
 using ImageShow, ImageCore, FileIO, OffsetArrays
 using ImageCore: PaddedViews
 import ImageBase: restrict
+import AxisArrays: AxisArray
 
 using Test
 
@@ -142,6 +143,15 @@ end
             show(file, MIME("image/png"), Gray.(A), minpixels=5, maxpixels=typemax(Int))
         end
         @test load(fn) == Ac[[1,1,2,2],[1,1,2,2]]
+    end
+    @testset "Array types that may not recognized by IO backends" begin
+        A = N0f8[0.01 0.99; 0.25 0.75]
+        A_axis = AxisArray(A)
+        fn = joinpath(workdir, "axis.png")
+        open(fn, "w") do file
+            show(file, MIME("image/png"), Gray.(A_axis), minpixels=5, maxpixels=typemax(Int))
+        end
+        @test load(fn) == A[[1,1,2,2],[1,1,2,2]]
     end
 end
 try
