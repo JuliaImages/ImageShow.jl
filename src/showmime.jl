@@ -54,10 +54,19 @@ csnormalize(c::Colorant) = RGBA(c)
 
 # Unless we have PNG IO backend that works on generic array types, we have to eagerly
 # convert it to dense array types
-# On performance: if the array type(e.g., OffsetArray) has efficient convert method to Array
-# then this is almost a no-op
-enforce_standard_dense_array(A::AbstractArray) = convert(Array, A)
+# On performance: if the array type has efficient convert method to Array then this is
+# almost a no-op
+function enforce_standard_dense_array(A::AbstractArray)
+    if Base.has_offset_axes(A)
+        convert(Array, OffsetArrays.no_offset_view(A))
+    else
+        convert(Array, A)
+    end
+end
 enforce_standard_dense_array(A::DenseArray) = A
+enforce_standard_dense_array(A::OffsetArray) = enforce_standard_dense_array(parent(A))
+# TODO(johnnychen94): Uncomment this when we set direct dependency to PNGFiles.
+# enforce_standard_dense_array(A::IndirectArray) = A # PNGFiles has built-in support for IndirectArray.
 
 const ColorantMatrix{T<:Colorant} = AbstractMatrix{T}
 
