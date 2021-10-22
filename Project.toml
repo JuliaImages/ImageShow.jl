@@ -21,10 +21,11 @@ julia = "1"
 [extras]
 AxisArrays = "39de3d68-74b9-583c-8d2d-e117c070f3a9"
 ImageDistances = "51556ac3-7006-55f5-8cb3-34580c88182d"
+ImageIO = "82e4d734-157c-48bb-816b-45c225c6df19"
 ImageMagick = "6218d12a-5da1-5696-b52f-db25d2ecc6d1"
 Suppressor = "fd094767-a336-5f1f-9728-57cf17d0bbfb"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 TestImages = "5e47fb64-e119-507b-a336-dd2b206d9990"
 
 [targets]
-test = ["AxisArrays", "ImageDistances", "ImageMagick", "Suppressor", "Test", "TestImages"]
+test = ["AxisArrays", "ImageDistances", "ImageIO", "ImageMagick", "Suppressor", "Test", "TestImages"]
