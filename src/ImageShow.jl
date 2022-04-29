@@ -1,5 +1,6 @@
 module ImageShow
 
+import Base64
 using FileIO
 using ImageCore, OffsetArrays
 import ImageBase: restrict

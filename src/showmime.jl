@@ -140,3 +140,29 @@ end
 
 _length1(A::AbstractArray) = length(eachindex(A))
 _length1(A) = length(A)
+
+
+
+const _HTML_IMAGE_MIMES = [
+    MIME("image/jpg"),
+    MIME("image/png"),
+]
+
+function Base.show(io::IO, ::MIME"text/html", img::ColorantMatrix)
+    _show_image_html(io, _HTML_IMAGE_MIMES, img)
+end
+
+function _show_image_html(io, mimes::Vector{<:MIME}, x)
+    for mime in _HTML_IMAGE_MIMES
+        if showable(mime, x)
+            _show_image_html(io, mime, x)
+            break
+        end
+    end
+end
+
+function _show_image_html(io, mime::MIME{Name}, x) where Name
+    buf = IOBuffer()
+    show(buf, mime, x)
+    print(io, """<img src="data:""", Name, ";base64,", Base64.base64encode(take!(buf)), "\" />")
+end
