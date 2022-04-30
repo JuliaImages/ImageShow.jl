@@ -153,7 +153,7 @@ function Base.show(io::IO, ::MIME"text/html", img::ColorantMatrix)
 end
 
 function _show_image_html(io, mimes::Vector{<:MIME}, x)
-    for mime in _HTML_IMAGE_MIMES
+    for mime in mimes
         if showable(mime, x)
             _show_image_html(io, mime, x)
             break
