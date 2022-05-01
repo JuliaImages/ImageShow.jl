@@ -5,6 +5,12 @@ using FileIO: @format_str
 using Base64: Base64EncodePipe
 import Base.showable
 
+const ColorantMatrix{T<:Colorant} = AbstractMatrix{T}
+const _HTML_IMAGE_MIMES = MIME[
+    MIME("image/png"), # default to PNG: it supports transparency and is lossless
+    MIME("image/jpg"),
+]
+
 # This is used by IJulia (for example) to display images
 
 # showable to PNG if 2D colorant array
@@ -47,6 +53,8 @@ end
 Base.show(io::IO, mime::MIME"image/png", img::OffsetArray{C}; kwargs...) where C<:Colorant =
     show(io, mime, parent(img); kwargs...)
 
+Base.show(io::IO, ::MIME"text/html", img::ColorantMatrix) = show_element(io, img)
+
 # Not all colorspaces are supported by all backends, so reduce types to a minimum
 csnormalize(c::AbstractGray) = Gray(c)
 csnormalize(c::Color) = RGB(c)
@@ -67,8 +75,6 @@ enforce_standard_dense_array(A::DenseArray) = A
 enforce_standard_dense_array(A::OffsetArray) = enforce_standard_dense_array(parent(A))
 # TODO(johnnychen94): Uncomment this when we set direct dependency to PNGFiles.
 # enforce_standard_dense_array(A::IndirectArray) = A # PNGFiles has built-in support for IndirectArray.
-
-const ColorantMatrix{T<:Colorant} = AbstractMatrix{T}
 
 function _show_odd(io::IO, m::MIME"text/html", imgs::AbstractArray{T, 1}) where T<:ColorantMatrix
     # display a vector of images in a row
@@ -126,43 +132,29 @@ function downsize_for_thumbnail(img, w, h)
         downsize_for_thumbnail(_restrict1(img), w, h) : img
 end
 
-function show_element(io::IOContext, img)
+show_element(io::IO, img, thumbnail=false; kw...) = show_element(IOContext(io), img, thumbnail; kw...)
+function show_element(io::IOContext, img, thumbnail=true; mimes=_HTML_IMAGE_MIMES)
+    img = if thumbnail
+        w,h=get(io, :thumbnailsize, (100,100))
+        im_resized = downsize_for_thumbnail(img, w, h)
+        thumbnail_style = get(io, :thumbnail, false) ? "max-width: $(w)px; max-height:$(h)px;" : ""
+        write(io,"<img style='$(thumbnail_style)display:inline' src=\"data:image/png;base64,")
+        im_resized
+    else
+        write(io,"<img src=\"data:image/png;base64,")
+        img
+    end
     io2=IOBuffer()
-    w,h=get(io, :thumbnailsize, (100,100))
-    im_resized = downsize_for_thumbnail(img, w, h)
-    thumbnail_style = get(io, :thumbnail, false) ? "max-width: $(w)px; max-height:$(h)px;" : ""
     b64pipe=Base64EncodePipe(io2)
-    write(io,"<img style='$(thumbnail_style)display:inline' src=\"data:image/png;base64,")
-    show(b64pipe, MIME"image/png"(), im_resized)
+    for mime in mimes
+        if showable(mime, img)
+            show(b64pipe, mime, img)
+            break
+        end
+    end
     write(io, read(seekstart(io2)))
     write(io,"\">")
 end
 
 _length1(A::AbstractArray) = length(eachindex(A))
 _length1(A) = length(A)
-
-
-
-const _HTML_IMAGE_MIMES = [
-    MIME("image/jpg"),
-    MIME("image/png"),
-]
-
-function Base.show(io::IO, ::MIME"text/html", img::ColorantMatrix)
-    _show_image_html(io, _HTML_IMAGE_MIMES, img)
-end
-
-function _show_image_html(io, mimes::Vector{<:MIME}, x)
-    for mime in mimes
-        if showable(mime, x)
-            _show_image_html(io, mime, x)
-            break
-        end
-    end
-end
-
-function _show_image_html(io, mime::MIME{Name}, x) where Name
-    buf = IOBuffer()
-    show(buf, mime, x)
-    print(io, """<img src="data:""", Name, ";base64,", Base64.base64encode(take!(buf)), "\" />")
-end
