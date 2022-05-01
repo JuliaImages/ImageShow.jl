@@ -157,10 +157,18 @@ end
         sshow(mime, x) = (io = IOBuffer(); show(io, mime, x); String(take!(io)))
         @test startswith(
             sshow(MIME("text/html"), zeros(Gray{Float32}, 1, 1)),
-            "<img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAAAAABV")
+            if VERSION >= v"1.3" # ImageIO
+                "<img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAAAAAB"
+            else # ImageMagick
+                "<img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkAQAAAAB"
+            end)
         @test startswith(
             sshow(MIME("text/html"), zeros(RGB{Float32}, 1, 1)),
-            "<img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/")
+            if VERSION >= v"1.3" # ImageIO
+                "<img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD"
+            else # ImageMagick
+                "<img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkAQAAAABY"
+            end)
     end
 end
 try
