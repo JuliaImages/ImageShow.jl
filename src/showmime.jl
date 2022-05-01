@@ -129,7 +129,7 @@ end
 function downsize_for_thumbnail(img, w, h)
     a,b=size(img)
     a > 2w && b > 2h ?
-        downsize_for_thumbnail(_restrict1(img), w, h) : img
+        downsize_for_thumbnail(restrict(img), w, h) : img
 end
 
 show_element(io::IO, img, thumbnail=false; kw...) = show_element(IOContext(io), img, thumbnail; kw...)
