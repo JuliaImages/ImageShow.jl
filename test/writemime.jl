@@ -169,6 +169,10 @@ end
             else # ImageMagick
                 "<img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkAQAAAABY"
             end)
+        @testset "Pluto integration" begin
+            # Pluto's integration (https://github.com/fonsp/Pluto.jl/pull/2108) depends on the Colorant type being available:
+            @test_nowarn ImageShow.Colorant
+        end
     end
 end
 try
