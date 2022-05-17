@@ -155,6 +155,7 @@ end
     end
     @testset "HTML display" begin
         sshow(mime, x) = (io = IOBuffer(); show(io, mime, x); String(take!(io)))
+        sshow_context(mime, x) = (io = IOBuffer(); show(IOContext(io), mime, x); String(take!(io)))
         @test startswith(
             sshow(MIME("text/html"), zeros(Gray{Float32}, 1, 1)),
             if VERSION >= v"1.3" # ImageIO
@@ -169,10 +170,15 @@ end
             else # ImageMagick
                 "<img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkAQAAAABY"
             end)
+
+        img = rand(RGB, 512, 512)
+        @test sshow_context(MIME("text/html"), img) == sshow(MIME("text/html"), img)
+
         @testset "Pluto integration" begin
             # Pluto's integration (https://github.com/fonsp/Pluto.jl/pull/2108) depends on the Colorant type being available:
             @test_nowarn ImageShow.Colorant
         end
+
     end
 end
 try

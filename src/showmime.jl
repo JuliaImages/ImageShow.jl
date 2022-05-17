@@ -80,7 +80,7 @@ function _show_odd(io::IO, m::MIME"text/html", imgs::AbstractArray{T, 1}) where 
     # display a vector of images in a row
     for j in eachindex(imgs)
         write(io, "<td style='text-align:center;vertical-align:middle; margin: 0.5em;border:1px #90999f solid;border-collapse:collapse'>")
-        show_element(IOContext(io, :thumbnail => true), imgs[j])
+        show_element(IOContext(io, :thumbnail => true), imgs[j], true)
         write(io, "</td>")
     end
 end
@@ -133,7 +133,7 @@ function downsize_for_thumbnail(img, w, h)
 end
 
 show_element(io::IO, img, thumbnail=false; kw...) = show_element(IOContext(io), img, thumbnail; kw...)
-function show_element(io::IOContext, img, thumbnail=true; mimes=_HTML_IMAGE_MIMES)
+function show_element(io::IOContext, img, thumbnail=false; mimes=_HTML_IMAGE_MIMES)
     img = if thumbnail
         w,h=get(io, :thumbnailsize, (100,100))
         im_resized = downsize_for_thumbnail(img, w, h)
