@@ -173,6 +173,12 @@ end
 
         img = rand(RGB, 512, 512)
         @test sshow_context(MIME("text/html"), img) == sshow(MIME("text/html"), img)
+
+        @testset "Pluto integration" begin
+            # Pluto's integration (https://github.com/fonsp/Pluto.jl/pull/2108) depends on the Colorant type being available:
+            @test_nowarn ImageShow.Colorant
+        end
+
     end
 end
 try
