@@ -15,11 +15,11 @@ The transforms are applied in that order.
 * `cmap=:gray` applies a colormap provided by ColorSchemes.jl. If `cmap=:gray` simply `Colors.Gray` is used
     and with different colormaps the result is an `Colors.RGB` element type
 """
-function simshow(arr::AbstractArray{<:Real}; 
+function simshow(arr::AbstractArray{T};
                  set_one=true, set_zero=false,
                  f = nothing,
-                 γ = 1,
-                 cmap=:gray)
+                 γ = one(T),
+                 cmap=:gray) where {T<:Real}
     arr = set_zero ? arr .- minimum(arr) : arr
 
     if set_one
@@ -56,7 +56,7 @@ The transforms are applied in that order.
 """
 function simshow(arr::AbstractArray{T};
                  f=nothing,
-                 absγ=1,
+                 absγ=one(T),
                  absf=nothing) where (T<:Complex)
 
     if !isnothing(f)
@@ -76,7 +76,7 @@ function simshow(arr::AbstractArray{T};
         absarr .= absarr .^ absγ
     end
 
-    angarr = angle.(arr) ./ Tr(2pi) * 360 
+    angarr = angle.(arr) ./ Tr(2pi) * Tr(360)
 
     HSV.(angarr, one(Tr), absarr)
 end
