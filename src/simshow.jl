@@ -5,7 +5,9 @@ export simshow
 
 Displays a real valued array . Brightness encodes magnitude.
 Works within Jupyter and Pluto.
+
 # Keyword args
+
 The transforms are applied in that order.
 * `set_zero=false` subtracts the minimum to set minimum to 1
 * `set_one=false` divides by the maximum to set maximum to 1
