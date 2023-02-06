@@ -9,8 +9,8 @@ Works within Jupyter and Pluto.
 # Keyword args
 
 The transforms are applied in that order.
-* `set_zero=false` subtracts the minimum to set minimum to 1
-* `set_one=false` divides by the maximum to set maximum to 1
+* `set_zero=false` subtracts the minimum to set minimum to 0
+* `set_one=true` divides by the maximum to set maximum to 1
 * `γ` applies a gamma correction to the abs 
 * `cmap=:gray` applies a colormap provided by ColorSchemes.jl. If `cmap=:gray` simply `Colors.Gray` is used
     and with different colormaps the result is an `Colors.RGB` element type
