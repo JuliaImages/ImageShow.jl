@@ -1,7 +1,7 @@
 export simshow
 
 """
-    simshow(arr; set_one=false, set_zero=false, γ=1)
+    simshow(arr; set_zero=false, set_one=false, γ=1)
 
 Displays a real valued array . Brightness encodes magnitude.
 Works within Jupyter and Pluto.
@@ -16,7 +16,7 @@ The transforms are applied in that order.
     and with different colormaps the result is an `Colors.RGB` element type
 """
 function simshow(arr::AbstractArray{T};
-                 set_one=true, set_zero=false,
+                 set_zero=false, set_one=true,
                  γ = one(T),
                  cmap=:gray) where {T<:Real}
 
