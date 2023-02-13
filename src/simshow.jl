@@ -1,9 +1,9 @@
 export simshow
 
 """
-    simshow(arr; set_zero=false, set_one=false, γ=1)
+    simshow(arr; set_zero=false, set_one=false, γ=1, cmap=:gray)
 
-Displays a real valued array . Brightness encodes magnitude.
+Displays a real valued array.
 Works within Jupyter and Pluto.
 
 # Keyword args
@@ -11,9 +11,10 @@ Works within Jupyter and Pluto.
 The transforms are applied in that order.
 * `set_zero=false` subtracts the minimum to set minimum to 0
 * `set_one=true` divides by the maximum to set maximum to 1
-* `γ` applies a gamma correction to the abs 
+* `γ` applies a gamma correction
 * `cmap=:gray` applies a colormap provided by ColorSchemes.jl. If `cmap=:gray` simply `Colors.Gray` is used
-    and with different colormaps the result is an `Colors.RGB` element type
+    and with different colormaps the result is an `Colors.RGB` element type. To use the different colormaps
+    install ColorSchemes.jl and try colormaps such as `:jet`, `:deep`, `thermal`, etc.
 """
 function simshow(arr::AbstractArray{T};
                  set_zero=false, set_one=true,
@@ -42,15 +43,13 @@ end
 
 
 """
-    simshow(arr)
+    simshow(arr; γ=1)
 
 Displays a complex array. Color encodes phase, brightness encodes magnitude.
 Works within Jupyter and Pluto.
 
 # Keyword args
-
-The transforms are applied in that order.
-* `γ` applies a gamma correction to the abs 
+* `γ` applies a gamma correction to the magnitude
 """
 function simshow(arr::AbstractArray{T};
                  γ=one(T)) where (T<:Complex)
@@ -69,12 +68,19 @@ function simshow(arr::AbstractArray{T};
     HSV.(angarr, one(Tr), absarr)
 end
 
+"""
+    simshow(arr::AbstractArray{Colors.Gray{<: Fixed}})
 
+"""
+function simshow(arr::AbstractArray{Colors.Gray{T}}) where {T<:Fixed}
+    return simshow(Array{Gray{Float64}}(arr))
+end
 
 """
     simshow(arr::AbstractArray{<:Colors.ColorTypes.Colorant})
 
 If `simshow` receives an array which already contains color information, just display it.
+In that case, no keywords argument are applied.
 """
 function simshow(arr::AbstractArray{<:Colors.ColorTypes.Colorant})
     return arr

@@ -25,6 +25,7 @@ image or 2d images as either a video sequence or a gif.
 
 - (Experimental) `play`/`explore` are interactive tools; it show images frame by frame as video sequence.
 - `gif` is non-interactive; it encodes the image as gif.
+- `simshow` is a simple image viewer to display arrays/images within Pluto or Jupyter. Works with complex numbers too. See `?simshow` for more.
 
 Feel free to replace `gif` with `play`/`explore` and see how it works:
 
