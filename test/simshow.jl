@@ -3,7 +3,7 @@
     @test simshow([1, 2, 3, 4]) == ColorTypes.Gray{Float64}[Gray{Float64}(0.25), Gray{Float64}(0.5), Gray{Float64}(0.75), Gray{Float64}(1.0)]
     @test simshow([0.1, 0.1], set_one = true) == ColorTypes.Gray{Float64}[Gray{Float64}(1.0), Gray{Float64}(1.0)]
     @test simshow([0.1, 0.1], set_one = false) == ColorTypes.Gray{Float64}[Gray{Float64}(0.1), Gray{Float64}(0.1)]
-    @test simshow([0.1, 0.1], set_one = false) == ColorTypes.Gray{Float64}[Gray{Float64}(0.1), Gray{Float64}(0.1)]
+    @test simshow([0.1f0, 0.1f0], set_one = false) == ColorTypes.Gray{Float32}[Gray{Float32}(0.1), Gray{Float32}(0.1f0)]
     @test simshow([0.1, -0.1], set_one = true, set_zero = false) == ColorTypes.Gray{Float64}[Gray{Float64}(1.0), Gray{Float64}(-1.0)]
     @test simshow([0.1, -0.1], set_one = true, set_zero = true) == ColorTypes.Gray{Float64}[Gray{Float64}(1.0), Gray{Float64}(0.0)]
     @test simshow([0.1, -0.1], set_one = false, set_zero = true) == ColorTypes.Gray{Float64}[Gray{Float64}(0.2), Gray{Float64}(0.0)]
