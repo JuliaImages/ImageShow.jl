@@ -52,7 +52,7 @@ Works within Jupyter and Pluto.
 * `γ` applies a gamma correction to the magnitude
 """
 function simshow(arr::AbstractArray{T};
-                 γ=one(T)) where (T<:Complex)
+                 γ=one(T), kwargs...) where (T<:Complex)
 
     Tr = real(T)
     # scale abs to 1
