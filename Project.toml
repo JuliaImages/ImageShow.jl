@@ -1,9 +1,10 @@
 name = "ImageShow"
 uuid = "4e3cecfd-b093-5904-9786-8bbb286a6a31"
-version = "0.3.6"
+version = "0.3.7"
 
 [deps]
 Base64 = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"
+ColorSchemes = "35d6a980-a343-548e-a6ea-1d62b119f2f4"
 FileIO = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
 ImageBase = "c817782e-172a-44cc-b673-b171935fbb9e"
 ImageCore = "a09fc81d-aa75-5fe9-8630-4744c3626534"
@@ -11,6 +12,7 @@ OffsetArrays = "6fe1bfb0-de20-5000-8ca7-80f57d26f881"
 StackViews = "cae243ae-269e-4f55-b966-ac2d0dc13c15"
 
 [compat]
+ColorSchemes = "3"
 FileIO = "1"
 ImageBase = "0.1"
 ImageCore = "0.9"

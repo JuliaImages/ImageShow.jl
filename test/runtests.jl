@@ -6,4 +6,5 @@ using Test
     include("gif.jl")
     include("keyboard.jl")
     include("multipage.jl")
+    include("simshow.jl")
 end
