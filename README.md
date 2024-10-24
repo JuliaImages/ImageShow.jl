@@ -1,6 +1,5 @@
 # ImageShow
 
-[![][travis-img]][travis-url]
 [![][pkgeval-img]][pkgeval-url]
 [![][codecov-img]][codecov-url]
 
