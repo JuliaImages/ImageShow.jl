@@ -145,7 +145,7 @@ function show_element(io::IOContext, img, thumbnail=false; mimes=_HTML_IMAGE_MIM
         img
     end
     io2=IOBuffer()
-    b64pipe=Base64EncodePipe(io2)
+    b64pipe=IOContext(Base64EncodePipe(io2), io)
     for mime in mimes
         if showable(mime, img)
             show(b64pipe, mime, img)
