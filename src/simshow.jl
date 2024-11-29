@@ -57,7 +57,10 @@ function simshow(arr::AbstractArray{T};
     Tr = real(T)
     # scale abs to 1
     absarr = abs.(arr)
-    absarr ./= maximum(absarr)
+    m = maximum(absarr)
+    if !iszero(m)
+        absarr ./= maximum(absarr)
+    end
 
     if !isone(γ)
         absarr .= absarr .^ γ
